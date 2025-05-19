@@ -1,0 +1,19 @@
+# Dockerfile.codex
+
+FROM node:22
+
+# Install corepack and enable pnpm
+RUN corepack enable && corepack prepare pnpm@latest --activate
+
+# Set working directory
+WORKDIR /app
+
+# Copy and install Codex CLI
+RUN git clone https://github.com/openai/codex.git && \
+    cd codex/codex-cli && \
+    pnpm install && \
+    pnpm build && \
+    pnpm link
+
+# Set default command (overridden by docker-compose)
+ENTRYPOINT ["tail", "-f", "/dev/null"]
