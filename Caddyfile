@@ -1,0 +1,10 @@
+${DOMAIN} {
+  reverse_proxy code-server:8443
+  encode gzip
+
+  tls ${EMAIL}
+
+  basicauth {
+    ${BASIC_AUTH_USER} ${BASIC_AUTH_PASS_HASH}
+  }
+}
