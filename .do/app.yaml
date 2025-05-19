@@ -1,20 +1,32 @@
+# .do/app.yaml
+
 name: gresky
+
 services:
   - name: code-server
     dockerfile_path: Dockerfile.code-server
+    github:
+      branch: main
     http_port: 8443
     routes:
       - path: /
     envs:
       - key: PASSWORD
-        scope: RUN_AND_BUILD_TIME
         type: SECRET
-      - key: OPENAI_API_KEY
-        scope: RUN_AND_BUILD_TIME
+      - key: DOMAIN
+        type: GENERAL
+      - key: EMAIL
+        type: GENERAL
+      - key: BASIC_AUTH_USER
         type: SECRET
+      - key: BASIC_AUTH_PASS_HASH
+        type: SECRET
+
   - name: codex-agent
     dockerfile_path: Dockerfile.codex
+    github:
+      branch: main
     envs:
       - key: OPENAI_API_KEY
-        scope: RUN_AND_BUILD_TIME
         type: SECRET
+
