@@ -1,0 +1,49 @@
+version: "3.8"
+
+services:
+  code-server:
+    image: codercom/code-server:latest
+    container_name: code-server
+    restart: unless-stopped
+    environment:
+      - PASSWORD=${PASSWORD}
+      - TZ=America/New_York
+    volumes:
+      - code-data:/home/coder/project
+      - ./dotfiles:/home/coder/.config
+    labels:
+      caddy: ${DOMAIN}
+      caddy.reverse_proxy: "/" code-server:8443
+    expose:
+      - "8443"
+
+  codex-agent:
+    build:
+      context: ./codex-cli
+      dockerfile: Dockerfile
+    container_name: codex-agent
+    restart: unless-stopped
+    working_dir: /app
+    volumes:
+      - code-data:/app
+      - ./.env:/app/.env:ro
+    entrypoint: ["tail", "-f", "/dev/null"]
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+
+  caddy:
+    image: caddy:latest
+    container_name: caddy-proxy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+
+volumes:
+  code-data:
+  caddy_data:
+  caddy_config:
