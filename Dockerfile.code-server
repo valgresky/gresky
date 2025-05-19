@@ -1,0 +1,9 @@
+# Dockerfile.code-server
+
+FROM codercom/code-server:latest
+
+# No customizations — use .env to inject password via runtime ENV
+ENV TZ=UTC
+
+# Optional: set working directory inside the container
+WORKDIR /home/coder/project
